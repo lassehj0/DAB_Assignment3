@@ -7,6 +7,8 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 
 namespace Assignment2.Services;
 
@@ -58,7 +60,7 @@ public class FacilitiesService
 
 	public async Task<ActionResult<IEnumerable<FFF>>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot()
 	{
-		//IMongoQueryable<User> users = _usersCollection.AsQueryable();
+		var users = _usersCollection.AsQueryable().ToList();
 		//List<int> userIDs = new List<int>();
 
 		//foreach(var user in users)
@@ -71,9 +73,9 @@ public class FacilitiesService
 		temp.Add(2);
 		temp.Add(3);
 
-		var filter = Builders<User>.Filter.Exists("userID");
-		var projection = Builders<User>.Projection.Exclude("_id");
-		List<User> users = _usersCollection.Find(filter).ToList();
+		//var filter = Builders<User>.Filter.Exists("userID");
+		//var projection = Builders<User>.Projection.Exclude("_id");
+		//List<User> users = _usersCollection.Find(filter).ToList();
 
 		IMongoQueryable<FFF> stuff = from f in _facilitiesCollection.AsQueryable()
 									 select new FFF
@@ -104,7 +106,9 @@ public class FacilitiesService
 		//		//	.ToList(),
 		//	});
 
-		return await stuff.ToListAsync();
+		var bson = _usersCollection.Find<User>(i => i == i).FirstOrDefault();
+
+		return BsonSerializer.Deserialize<User>(bson.ToBsonDocument());
 	}
 
 	//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs()

@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Text.Json.Serialization;
 using MongoDB;
 using MongoDB.Bson.Serialization;
-using Assignment2.Views;
+using Assignment2.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,10 +22,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 	options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-//BsonClassMap.RegisterClassMap<User>(cm =>
-//{
-//	cm.AutoMap();
-//});
+BsonClassMap.RegisterClassMap<FFF>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
