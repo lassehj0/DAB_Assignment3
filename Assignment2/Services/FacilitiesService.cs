@@ -1,7 +1,6 @@
 ﻿using Assignment2.Controllers;
 using Assignment2.Models;
-using Assignment2.Views;
-using Assignment2.Services;
+using Assignment2.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -12,7 +11,8 @@ namespace Assignment2.Services;
 
 public class FacilitiesService
 {
-	private readonly IMongoCollection<Facility> _facilitiesCollection;
+    private readonly IMongoCollection<Booking> _bookingsCollection;
+    private readonly IMongoCollection<Facility> _facilitiesCollection;
 	private readonly IMongoCollection<User> _usersCollection;
 
 	public FacilitiesService(
@@ -29,6 +29,9 @@ public class FacilitiesService
 
 		_usersCollection = mongoDatabase.GetCollection<User>(
 			mongoDbSettings.Value.UsersCollectionName);
+
+		_bookingsCollection = mongoDatabase.GetCollection<Booking>(
+			mongoDbSettings.Value.BookingsCollectionName);
 	}
 
 	public async Task<ActionResult<IEnumerable<F>>> GetFacilityNamesAndAddresses()
@@ -56,35 +59,50 @@ public class FacilitiesService
 		return await stuffSorted.ToListAsync();
 	}
 
-	public async Task<ActionResult<IEnumerable<FFF>>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot()
+	public async Task<List<BookingDTO>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot()
 	{
-		//IMongoQueryable<User> users = _usersCollection.AsQueryable();
-		//List<int> userIDs = new List<int>();
+        var bookings = await _bookingsCollection.Find(booking => true).ToListAsync();
 
-		//foreach(var user in users)
-		//{
-		//	userIDs.Add(user.userID);
-		//}
+        var result = new List<BookingDTO>();
 
-		List<int> temp = new List<int>();
-		temp.Add(1);
-		temp.Add(2);
-		temp.Add(3);
+        foreach (var booking in bookings)
+        {
+            result.Add(new BookingDTO
+            {
+                FacilityName = booking.facility.facilityName,
+                UserName = booking.user.name,
+                BookingInterval = booking.hourInterval
+         
+			});
+        }
+		return result;
+        //IMongoQueryable<User> users = _usersCollection.AsQueryable();
+        //List<int> userIDs = new List<int>();
 
-		var filter = Builders<User>.Filter.Exists("userID");
-		var projection = Builders<User>.Projection.Exclude("_id");
-		List<User> users = _usersCollection.Find(filter).ToList();
+        //foreach(var user in users)
+        //{
+        //	userIDs.Add(user.userID);
+        //}
 
-		IMongoQueryable<FFF> stuff = from f in _facilitiesCollection.AsQueryable()
-									 select new FFF
-									 {
-										 name = f.facilityName,
-										 user = (List<User>)(from ff in f.bookings
-															 where temp.Contains(ff.userID)
-															 select from fff in users
-																	where fff.userID == ff.userID
-																	select fff)
-									 };
+  //      List<int> temp = new List<int>();
+		//temp.Add(1);
+		//temp.Add(2);
+		//temp.Add(3);
+
+		//var filter = Builders<User>.Filter.Exists("userID");
+		//var projection = Builders<User>.Projection.Exclude("_id");
+		//List<User> users = _usersCollection.Find(filter).ToList();
+
+		//IMongoQueryable<FFF> stuff = from f in _facilitiesCollection.AsQueryable()
+		//							 select new FFF
+		//							 {
+		//								 name = f.facilityName,
+		//								 user = (List<User>)(from ff in f.bookings
+		//													 where temp.Contains(ff.userID)
+		//													 select from fff in users
+		//															where fff.userID == ff.userID
+		//															select fff)
+		//							 };
 
 		//IMongoQueryable<FFF> stuff = _facilitiesCollection.AsQueryable()
 		//	.Where(f => f.bookings != null)
@@ -104,7 +122,7 @@ public class FacilitiesService
 		//		//	.ToList(),
 		//	});
 
-		return await stuff.ToListAsync();
+		//return await stuff.ToListAsync();
 	}
 
 	//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs()

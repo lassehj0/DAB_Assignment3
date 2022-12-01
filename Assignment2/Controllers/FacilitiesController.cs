@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Assignment2.Models;
-using Assignment2.Views;
 using Assignment2.Services;
 
 namespace Assignment2.Controllers

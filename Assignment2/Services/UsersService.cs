@@ -1,6 +1,5 @@
 ﻿using Assignment2.Controllers;
 using Assignment2.Models;
-using Assignment2.Views;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
