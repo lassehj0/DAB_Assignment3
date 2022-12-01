@@ -7,6 +7,7 @@ namespace Assignment2.Models
     public class Facility
     {
         [BsonId]
+        public string _id { get; set; } 
         public int facilityID { get; set; }
         public int maxOccupants { get; set; }
         public bool reservable { get; set; }
@@ -16,7 +17,7 @@ namespace Assignment2.Models
         public string kind { get; set; }
         public string facilityName { get; set; }
 
-        public List<Item> items { get; set; }
-        public List<Booking> bookings { get; set; }
+        public List<Item> Items { get; set; }
+        //public List<Booking> bookings { get; set; }
     }
 }

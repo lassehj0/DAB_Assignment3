@@ -62,7 +62,11 @@ namespace Assignment2.Controllers
 		[Route("stopaskingfornewnames")]
         public async Task<List<BookingDTO>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot() =>
 			await _facilitiesService.GetBookedFacilitiesNamesWithBookingUserAndTimeslot();
-        
+
+        [HttpGet]
+        [Route("GetBookingsWithCPR")]
+        public async Task<List<CPRDTO>> GetBookingsWithCPR() =>
+			await _facilitiesService.GetBookingsWithCPR();
 
         //[HttpGet]
         //[Route("bruh")]

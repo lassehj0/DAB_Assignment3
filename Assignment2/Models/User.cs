@@ -15,6 +15,6 @@ namespace Assignment2.Models
         public int phoneNumber { get; set; }
         public string name { get; set; }
 
-        public List<Booking> bookings { get; set; }
+        //public List<Booking> bookings { get; set; }
     }
 }
