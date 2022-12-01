@@ -12,7 +12,7 @@ namespace Assignment2.Views
         public bool reservable { get; set; }
         public string? description { get; set; }
         public string? utilities { get; set; }
-        public Point coordinates { get; set; }
+        public double[] coordinates { get; set; }
         public string kind { get; set; }
         public string facilityName { get; set; }
 

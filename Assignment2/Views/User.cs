@@ -1,7 +1,13 @@
-﻿namespace Assignment2.Views
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Assignment2.Views
 {
     public class User
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string _id { get; set; }
         public int userID { get; set; }
         public string category { get; set; }
         public int? CVR { get; set; }

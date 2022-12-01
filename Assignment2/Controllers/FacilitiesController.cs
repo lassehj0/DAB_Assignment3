@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Assignment2.Models;
 using Assignment2.Views;
-using NetTopologySuite.Geometries;
 using Assignment2.Services;
 
 namespace Assignment2.Controllers
@@ -15,13 +14,13 @@ namespace Assignment2.Controllers
 	public class F
 	{
 		public string name { get; set; }
-		public Point address { get; set; }
+		public double[] address { get; set; }
 	}
 
 	public class FF
 	{
 		public string name { get; set; }
-		public Point address { get; set; }
+		public double[] address { get; set; }
 		public string kind { get; set; }
 	}
 
@@ -29,7 +28,7 @@ namespace Assignment2.Controllers
 	{
 		public string name { get; set; }
 		public List<User> user { get; set; }
-		public List<string> timeslot { get; set; }
+		//public List<string> timeslot { get; set; }
 	}
 
 	public class FFFF
@@ -64,14 +63,14 @@ namespace Assignment2.Controllers
 		public async Task<ActionResult<IEnumerable<FFF>>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot() =>
 			await _facilitiesService.GetBookedFacilitiesNamesWithBookingUserAndTimeslot();
 
-		[HttpGet]
-		[Route("bruh")]
-		public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs() =>
-			await _facilitiesService.GetListOfCPRs();
+		//[HttpGet]
+		//[Route("bruh")]
+		//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs() =>
+		//	await _facilitiesService.GetListOfCPRs();
 
-		[HttpGet]
-		[Route("bruh2")]
-		public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances() =>
-			await _facilitiesService.GetListOfMaintenances();
-    }
+		//[HttpGet]
+		//[Route("bruh2")]
+		//public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances() =>
+		//	await _facilitiesService.GetListOfMaintenances();
+	}
 }

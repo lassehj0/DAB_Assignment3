@@ -4,12 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using MongoDB;
+using MongoDB.Bson.Serialization;
+using Assignment2.Views;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.Configure<mongoDBSettings>(
-	builder.Configuration.GetSection("idk"));
+	builder.Configuration.GetSection("mongoDB"));
 
 builder.Services.AddSingleton<FacilitiesService>();
 
@@ -17,8 +20,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
 	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 	options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-	options.JsonSerializerOptions.Converters.Add(new NetTopologySuite.IO.Converters.GeoJsonConverterFactory());
 });
+
+//BsonClassMap.RegisterClassMap<User>(cm =>
+//{
+//	cm.AutoMap();
+//});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -30,8 +37,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

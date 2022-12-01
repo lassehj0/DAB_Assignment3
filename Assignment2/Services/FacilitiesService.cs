@@ -1,16 +1,19 @@
 ﻿using Assignment2.Controllers;
 using Assignment2.Models;
 using Assignment2.Views;
+using Assignment2.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using System.Linq;
 
 namespace Assignment2.Services;
 
 public class FacilitiesService
 {
 	private readonly IMongoCollection<Facility> _facilitiesCollection;
+	private readonly IMongoCollection<User> _usersCollection;
 
 	public FacilitiesService(
 		IOptions<mongoDBSettings> mongoDbSettings)
@@ -23,11 +26,14 @@ public class FacilitiesService
 
 		_facilitiesCollection = mongoDatabase.GetCollection<Facility>(
 			mongoDbSettings.Value.FacilitiesCollectionName);
+
+		_usersCollection = mongoDatabase.GetCollection<User>(
+			mongoDbSettings.Value.UsersCollectionName);
 	}
 
 	public async Task<ActionResult<IEnumerable<F>>> GetFacilityNamesAndAddresses()
 	{
-		var stuff = from f in _facilitiesCollection.AsQueryable()
+		IMongoQueryable<F> stuff = from f in _facilitiesCollection.AsQueryable()
 					orderby f.kind
 					select new F
 					{
@@ -39,56 +45,86 @@ public class FacilitiesService
 
 	public async Task<ActionResult<IEnumerable<FF>>> GetFacilityNamesAndAddressesAndKinds()
 	{
-		var stuff = from f in _facilitiesCollection.AsQueryable()
+		IMongoQueryable<FF> stuff = from f in _facilitiesCollection.AsQueryable()
 					select new FF
 					{
 						name = f.facilityName,
 						address = f.coordinates,
 						kind = f.kind,
 					};
-		return await stuff.ToListAsync();
+		var stuffSorted = stuff.OrderBy(f => f.kind);
+		return await stuffSorted.ToListAsync();
 	}
 
 	public async Task<ActionResult<IEnumerable<FFF>>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot()
 	{
-		var stuff = _facilitiesCollection.AsQueryable()
-			.Where(f => f.bookings != null)
-			.Select(f => new FFF
-			{
-				name = f.facilityName,
-				user = f.bookings
-					.Select(ff => ff.user)
-					.Distinct()
-					.ToList(),
-				timeslot = f.bookings
-					.GroupBy(ff => ff.userID)
-					.Select(ff => ff
-						.Select(fff => fff.hourInterval)
-						.First())
-					.ToList(),
-			});
+		//IMongoQueryable<User> users = _usersCollection.AsQueryable();
+		//List<int> userIDs = new List<int>();
+
+		//foreach(var user in users)
+		//{
+		//	userIDs.Add(user.userID);
+		//}
+
+		List<int> temp = new List<int>();
+		temp.Add(1);
+		temp.Add(2);
+		temp.Add(3);
+
+		var filter = Builders<User>.Filter.Exists("userID");
+		var projection = Builders<User>.Projection.Exclude("_id");
+		List<User> users = _usersCollection.Find(filter).ToList();
+
+		IMongoQueryable<FFF> stuff = from f in _facilitiesCollection.AsQueryable()
+									 select new FFF
+									 {
+										 name = f.facilityName,
+										 user = (List<User>)(from ff in f.bookings
+															 where temp.Contains(ff.userID)
+															 select from fff in users
+																	where fff.userID == ff.userID
+																	select fff)
+									 };
+
+		//IMongoQueryable<FFF> stuff = _facilitiesCollection.AsQueryable()
+		//	.Where(f => f.bookings != null)
+		//	.Select(f => new FFF
+		//	{
+		//		name = f.facilityName,
+		//		user = f.bookings
+		//			.Where(b => users.Select(bb => bb.userID).Contains(b.userID))
+		//			.Select(b => users.Where(u => u.userID == b.userID).FirstOrDefault())
+		//			.Distinct()
+		//			.ToList(),
+		//		//timeslot = f.bookings
+		//		//	.GroupBy(ff => ff.userID)
+		//		//	.Select(ff => ff
+		//		//		.Select(fff => fff.hourInterval)
+		//		//		.First())
+		//		//	.ToList(),
+		//	});
 
 		return await stuff.ToListAsync();
 	}
 
-	public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs()
-	{
-		var stuff = _facilitiesCollection.AsQueryable()
-			.Select(b => b.CPR);
+	//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs()
+	//{
+	//	var stuff = _facilitiesCollection.AsQueryable()
+	//		.Select(f => f.bookings.Select(b => b.CPR));
 
-		return await stuff.ToListAsync();
-	}
+	//	return await stuff.ToListAsync();
+	//}
 
-	public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances()
-	{
-		var stuff = _facilitiesCollection.AsQueryable()
-			.Select(b => new FFFF
-			{
-				date = b.date,
-				description = b.description,
-				itemID = b.itemID
-			});
+	//public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances()
+	//{
+	//	var stuff = _facilitiesCollection.AsQueryable()
+	//		.Select(b => new FFFF
+	//		{
+	//			date = b.date,
+	//			description = b.description,
+	//			itemID = b.itemID
+	//		});
 
-		return await stuff.ToListAsync();
-	}
+	//	return await stuff.ToListAsync();
+	//}
 }

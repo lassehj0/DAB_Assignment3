@@ -1,4 +1,7 @@
-﻿namespace Assignment2.Views
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Assignment2.Views
 {
     public class CPR
     {
