@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Text.Json.Serialization;
 using MongoDB;
 using MongoDB.Bson.Serialization;
-using Assignment2.Views;
 
 var builder = WebApplication.CreateBuilder(args);
 

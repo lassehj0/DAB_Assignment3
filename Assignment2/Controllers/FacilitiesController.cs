@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Assignment2.Models;
 using Assignment2.Services;
+using Assignment2.Models.DTO;
 
 namespace Assignment2.Controllers
 {
@@ -59,17 +60,18 @@ namespace Assignment2.Controllers
 
 		[HttpGet]
 		[Route("stopaskingfornewnames")]
-		public async Task<ActionResult<IEnumerable<FFF>>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot() =>
+        public async Task<List<BookingDTO>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot() =>
 			await _facilitiesService.GetBookedFacilitiesNamesWithBookingUserAndTimeslot();
+        
 
-		//[HttpGet]
-		//[Route("bruh")]
-		//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs() =>
-		//	await _facilitiesService.GetListOfCPRs();
+        //[HttpGet]
+        //[Route("bruh")]
+        //public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs() =>
+        //	await _facilitiesService.GetListOfCPRs();
 
-		//[HttpGet]
-		//[Route("bruh2")]
-		//public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances() =>
-		//	await _facilitiesService.GetListOfMaintenances();
-	}
+        //[HttpGet]
+        //[Route("bruh2")]
+        //public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances() =>
+        //	await _facilitiesService.GetListOfMaintenances();
+    }
 }
