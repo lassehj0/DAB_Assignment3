@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<mongoDBSettings>(
 	builder.Configuration.GetSection("mongoDB"));
 
-builder.Services.AddSingleton<FacilitiesService>();
+builder.Services.AddSingleton<Service>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

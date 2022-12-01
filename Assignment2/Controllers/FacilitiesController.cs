@@ -42,40 +42,35 @@ namespace Assignment2.Controllers
 	[ApiController]
 	public class FacilitiesController : ControllerBase
 	{
-		private readonly FacilitiesService _facilitiesService;
+		private readonly Service _service;
 
-		public FacilitiesController(FacilitiesService facilitiesService) =>
-			_facilitiesService = facilitiesService;
+		public FacilitiesController(Service facilitiesService) =>
+			_service = facilitiesService;
 
 		// GET: api/Facilities
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<F>>> GetFacilityNamesAndAddresses() =>
-			await _facilitiesService.GetFacilityNamesAndAddresses();
+			await _service.GetFacilityNamesAndAddresses();
 
 		[HttpGet]
 		[Route("idkman")]
 		public async Task<ActionResult<IEnumerable<FF>>> GetFacilityNamesAndAddressesAndKinds() =>
-			await _facilitiesService.GetFacilityNamesAndAddressesAndKinds();
+			await _service.GetFacilityNamesAndAddressesAndKinds();
 
 
 		[HttpGet]
 		[Route("stopaskingfornewnames")]
         public async Task<List<BookingDTO>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot() =>
-			await _facilitiesService.GetBookedFacilitiesNamesWithBookingUserAndTimeslot();
+			await _service.GetBookedFacilitiesNamesWithBookingUserAndTimeslot();
 
         [HttpGet]
         [Route("GetBookingsWithCPR")]
         public async Task<List<CPRDTO>> GetBookingsWithCPR() =>
-			await _facilitiesService.GetBookingsWithCPR();
+			await _service.GetBookingsWithCPR();
 
-        //[HttpGet]
-        //[Route("bruh")]
-        //public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs() =>
-        //	await _facilitiesService.GetListOfCPRs();
-
-        //[HttpGet]
-        //[Route("bruh2")]
-        //public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances() =>
-        //	await _facilitiesService.GetListOfMaintenances();
+        [HttpGet]
+        [Route("bruh2")]
+        public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances() =>
+			await _service.GetListOfMaintenances();
     }
 }

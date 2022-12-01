@@ -7,6 +7,7 @@ namespace Assignment2.Models
     public class Facility
     {
         [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; } 
         public int facilityID { get; set; }
         public int maxOccupants { get; set; }

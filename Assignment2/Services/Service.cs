@@ -9,13 +9,13 @@ using System.Linq;
 
 namespace Assignment2.Services;
 
-public class FacilitiesService
+public class Service
 {
 	private readonly IMongoCollection<Booking> _bookingsCollection;
 	private readonly IMongoCollection<Facility> _facilitiesCollection;
 	private readonly IMongoCollection<User> _usersCollection;
 
-	public FacilitiesService(
+	public Service(
 		IOptions<mongoDBSettings> mongoDbSettings)
 	{
 		var mongoClient = new MongoClient(
@@ -76,53 +76,6 @@ public class FacilitiesService
 			});
 		}
 		return result;
-		//IMongoQueryable<User> users = _usersCollection.AsQueryable();
-		//List<int> userIDs = new List<int>();
-
-		//foreach(var user in users)
-		//{
-		//	userIDs.Add(user.userID);
-		//}
-
-		//      List<int> temp = new List<int>();
-		//temp.Add(1);
-		//temp.Add(2);
-		//temp.Add(3);
-
-		//var filter = Builders<User>.Filter.Exists("userID");
-		//var projection = Builders<User>.Projection.Exclude("_id");
-		//List<User> users = _usersCollection.Find(filter).ToList();
-
-		//IMongoQueryable<FFF> stuff = from f in _facilitiesCollection.AsQueryable()
-		//							 select new FFF
-		//							 {
-		//								 name = f.facilityName,
-		//								 user = (List<User>)(from ff in f.bookings
-		//													 where temp.Contains(ff.userID)
-		//													 select from fff in users
-		//															where fff.userID == ff.userID
-		//															select fff)
-		//							 };
-
-		//IMongoQueryable<FFF> stuff = _facilitiesCollection.AsQueryable()
-		//	.Where(f => f.bookings != null)
-		//	.Select(f => new FFF
-		//	{
-		//		name = f.facilityName,
-		//		user = f.bookings
-		//			.Where(b => users.Select(bb => bb.userID).Contains(b.userID))
-		//			.Select(b => users.Where(u => u.userID == b.userID).FirstOrDefault())
-		//			.Distinct()
-		//			.ToList(),
-		//		//timeslot = f.bookings
-		//		//	.GroupBy(ff => ff.userID)
-		//		//	.Select(ff => ff
-		//		//		.Select(fff => fff.hourInterval)
-		//		//		.First())
-		//		//	.ToList(),
-		//	});
-
-		//return await stuff.ToListAsync();
 	}
 
 	public async Task<List<CPRDTO>> GetBookingsWithCPR()
