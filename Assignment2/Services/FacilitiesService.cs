@@ -140,26 +140,29 @@ public class FacilitiesService
 			});
 		}
 		return result;
-
-		//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs()
-		//{
-		//	var stuff = _facilitiesCollection.AsQueryable()
-		//		.Select(f => f.bookings.Select(b => b.CPR));
-
-		//	return await stuff.ToListAsync();
-		//}
-
-		//public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances()
-		//{
-		//	var stuff = _facilitiesCollection.AsQueryable()
-		//		.Select(b => new FFFF
-		//		{
-		//			date = b.date,
-		//			description = b.description,
-		//			itemID = b.itemID
-		//		});
-
-		//	return await stuff.ToListAsync();
-		//}
 	}
+    public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances()
+    {
+        var facilities = _facilitiesCollection.AsQueryable().ToList();
+
+        List<FFFF> stuff = new();
+        foreach (Facility facility in facilities)
+        {
+            foreach (Item item in facility.Items)
+            {
+                foreach (Maintainance maintainance in item.Maintainances)
+                {
+                    stuff.Add(new FFFF
+                    {
+                        date = maintainance.date,
+                        description = maintainance.description,
+                        itemID = maintainance.itemID,
+                    });
+                }
+            }
+        }
+
+
+        return stuff;
+    }
 }
