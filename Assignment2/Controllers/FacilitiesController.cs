@@ -27,7 +27,7 @@ namespace Assignment2.Controllers
 	public class FFF
 	{
 		public string name { get; set; }
-		public List<User> user { get; set; }
+		public List<string> user { get; set; }
 		//public List<string> timeslot { get; set; }
 	}
 

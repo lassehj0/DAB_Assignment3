@@ -81,11 +81,11 @@ public class FacilitiesService
 									 select new FFF
 									 {
 										 name = f.facilityName,
-										 user = (List<User>)(from ff in f.bookings
+										 user = (List<string>)(from ff in f.bookings
 															 where temp.Contains(ff.userID)
 															 select from fff in users
 																	where fff.userID == ff.userID
-																	select fff)
+																	select fff.name)
 									 };
 
 		//IMongoQueryable<FFF> stuff = _facilitiesCollection.AsQueryable()
@@ -106,9 +106,7 @@ public class FacilitiesService
 		//		//	.ToList(),
 		//	});
 
-		var bson = _usersCollection.Find<User>(i => i == i).FirstOrDefault();
-
-		return BsonSerializer.Deserialize<User>(bson.ToBsonDocument());
+		return await stuff.ToListAsync();
 	}
 
 	//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs()
