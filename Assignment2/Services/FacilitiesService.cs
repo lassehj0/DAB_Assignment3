@@ -9,6 +9,7 @@ using MongoDB.Driver.Linq;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Assignment2.Services;
 
@@ -16,6 +17,7 @@ public class FacilitiesService
 {
 	private readonly IMongoCollection<Facility> _facilitiesCollection;
 	private readonly IMongoCollection<User> _usersCollection;
+	private readonly IMongoCollection<Booking> _bookingsCollection;
 
 	public FacilitiesService(
 		IOptions<mongoDBSettings> mongoDbSettings)
@@ -31,6 +33,9 @@ public class FacilitiesService
 
 		_usersCollection = mongoDatabase.GetCollection<User>(
 			mongoDbSettings.Value.UsersCollectionName);
+
+		_bookingsCollection = mongoDatabase.GetCollection<Booking>(
+			mongoDbSettings.Value.BookingsCollectionName);
 	}
 
 	public async Task<ActionResult<IEnumerable<F>>> GetFacilityNamesAndAddresses()
@@ -61,72 +66,79 @@ public class FacilitiesService
 	public async Task<ActionResult<IEnumerable<FFF>>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot()
 	{
 		var users = _usersCollection.AsQueryable().ToList();
-		//List<int> userIDs = new List<int>();
+		var facilities = _facilitiesCollection.AsQueryable().ToList();
+		var bookings = _bookingsCollection.AsQueryable().ToList();
 
-		//foreach(var user in users)
-		//{
-		//	userIDs.Add(user.userID);
-		//}
+		List<FFF> stuff = new();
+		foreach (var booking in bookings)
+		{
+			string nam = "hej";
+			string usr = "bruh";
+			string time = "nulltime";
 
-		List<int> temp = new List<int>();
-		temp.Add(1);
-		temp.Add(2);
-		temp.Add(3);
+			foreach (var facility in facilities)
+			{
+				if (facility.facilityID == booking.facilityID)
+				{
+					nam = facility.facilityName;
+					time = booking.hourInterval;
+				}
+			}
 
-		//var filter = Builders<User>.Filter.Exists("userID");
-		//var projection = Builders<User>.Projection.Exclude("_id");
-		//List<User> users = _usersCollection.Find(filter).ToList();
+			foreach (var user in users)
+			{
+				if (user.userID == booking.userID)
+					usr = user.name;
+			}
 
-		IMongoQueryable<FFF> stuff = from f in _facilitiesCollection.AsQueryable()
-									 select new FFF
-									 {
-										 name = f.facilityName,
-										 user = (List<string>)(from ff in f.bookings
-															 where temp.Contains(ff.userID)
-															 select from fff in users
-																	where fff.userID == ff.userID
-																	select fff.name)
-									 };
+			stuff.Add(new FFF { name = nam, user = usr, timeslot = time });
+		}
 
-		//IMongoQueryable<FFF> stuff = _facilitiesCollection.AsQueryable()
-		//	.Where(f => f.bookings != null)
-		//	.Select(f => new FFF
-		//	{
-		//		name = f.facilityName,
-		//		user = f.bookings
-		//			.Where(b => users.Select(bb => bb.userID).Contains(b.userID))
-		//			.Select(b => users.Where(u => u.userID == b.userID).FirstOrDefault())
-		//			.Distinct()
-		//			.ToList(),
-		//		//timeslot = f.bookings
-		//		//	.GroupBy(ff => ff.userID)
-		//		//	.Select(ff => ff
-		//		//		.Select(fff => fff.hourInterval)
-		//		//		.First())
-		//		//	.ToList(),
-		//	});
-
-		return await stuff.ToListAsync();
+		return stuff;
 	}
 
-	//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs()
-	//{
-	//	var stuff = _facilitiesCollection.AsQueryable()
-	//		.Select(f => f.bookings.Select(b => b.CPR));
+	public async Task<ActionResult<IEnumerable<FFFFF>>> GetListOfCPRs()
+	{
+		var bookings = _bookingsCollection.AsQueryable().ToList();
 
-	//	return await stuff.ToListAsync();
-	//}
+		List<FFFFF> stuff = new();
+		foreach (var booking in bookings)
+		{
+			int bookingId = booking.bookingID;
+			List<CPR> cpr = new();
 
-	//public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances()
-	//{
-	//	var stuff = _facilitiesCollection.AsQueryable()
-	//		.Select(b => new FFFF
-	//		{
-	//			date = b.date,
-	//			description = b.description,
-	//			itemID = b.itemID
-	//		});
+			foreach (CPR cPR in booking.CPR)
+			{
+				cpr.Add(cPR);
+			}
 
-	//	return await stuff.ToListAsync();
-	//}
+			stuff.Add(new FFFFF{ bookingID = bookingId, cpr = cpr});
+		}
+
+		return stuff;
+	}
+
+	public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances()
+	{
+		var facilities = _facilitiesCollection.AsQueryable().ToList();
+
+		List<FFFF> stuff = new();
+		foreach (Facility facility in facilities)
+		{
+			foreach (Item item in facility.items)
+			{
+				foreach (Maintainance maintainance in item.maintainances)
+				{
+					stuff.Add(new FFFF { 
+						date = maintainance.date, 
+						description = maintainance.description,
+						itemID = maintainance.itemID,
+					});
+				}
+			}
+		}
+
+
+		return stuff;
+	}
 }

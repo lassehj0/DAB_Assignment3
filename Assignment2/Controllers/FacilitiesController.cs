@@ -27,15 +27,21 @@ namespace Assignment2.Controllers
 	public class FFF
 	{
 		public string name { get; set; }
-		public List<string> user { get; set; }
-		//public List<string> timeslot { get; set; }
+		public string user { get; set; }
+		public string timeslot { get; set; }
 	}
 
 	public class FFFF
 	{
-		public DateTime date { get; set; }
+		public string date { get; set; }
 		public string description { get; set; }
 		public int itemID { get; set; }
+	}
+
+	public class FFFFF
+	{
+		public int bookingID { get; set; }
+		public List<CPR> cpr { get; set; }
 	}
 
 	[Route("api/[controller]")]
@@ -63,14 +69,14 @@ namespace Assignment2.Controllers
 		public async Task<ActionResult<IEnumerable<FFF>>> GetBookedFacilitiesNamesWithBookingUserAndTimeslot() =>
 			await _facilitiesService.GetBookedFacilitiesNamesWithBookingUserAndTimeslot();
 
-		//[HttpGet]
-		//[Route("bruh")]
-		//public async Task<ActionResult<IEnumerable<List<CPR>>>> GetListOfCPRs() =>
-		//	await _facilitiesService.GetListOfCPRs();
+		[HttpGet]
+		[Route("bruh")]
+		public async Task<ActionResult<IEnumerable<FFFFF>>> GetListOfCPRs() =>
+			await _facilitiesService.GetListOfCPRs();
 
-		//[HttpGet]
-		//[Route("bruh2")]
-		//public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances() =>
-		//	await _facilitiesService.GetListOfMaintenances();
+		[HttpGet]
+		[Route("bruh2")]
+		public async Task<ActionResult<IEnumerable<FFFF>>> GetListOfMaintenances() =>
+			await _facilitiesService.GetListOfMaintenances();
 	}
 }

@@ -7,6 +7,8 @@ namespace Assignment2.Views
     public class Facility
     {
         [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string _id { get; set; }
         public int facilityID { get; set; }
         public int maxOccupants { get; set; }
         public bool reservable { get; set; }

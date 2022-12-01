@@ -5,6 +5,9 @@ namespace Assignment2.Views
 {
 	public class Booking
 	{
+		[BsonId]
+		[BsonRepresentation(BsonType.ObjectId)]
+		public string _id { get; set; }
 		public int bookingID { get; set; }
 		public string? note { get; set; }
 		public string category { get; set; }
